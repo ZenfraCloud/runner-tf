@@ -33,9 +33,11 @@ jobs:
           # Add 'latest' tag for pushes to the main branch
           # Add Git tag for tagged pushes
           tags: |
-            type=schedule
-            type=ref,event=branch
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
+            # tag the git tag
             type=ref,event=tag
+            # tag the sha
             type=sha
 
       - name: Build and push Docker image
