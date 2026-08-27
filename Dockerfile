@@ -10,7 +10,10 @@
 # needs a from-source build), and a minority of Terraform providers are cgo-
 # linked and fail on musl.
 
-ARG BASE_IMAGE=debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
+# Pulled via Google's pull-through cache, not Docker Hub directly: the shared
+# CI runners egress from one IP and hit Docker Hub's anonymous pull-rate limit.
+# mirror.gcr.io serves the identical digest.
+ARG BASE_IMAGE=mirror.gcr.io/library/debian:trixie-slim@sha256:d7e12182ce18b85b93007c1dedf31f2d29e01ccf3182cc4017c709b6259bc132
 
 FROM ${BASE_IMAGE} AS base
 
