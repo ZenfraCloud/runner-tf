@@ -13,7 +13,7 @@ env:
 jobs:
   build-and-push:
     name: Build and Push
-    runs-on: arc-runner
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
@@ -21,23 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # ARC pods on K8s ship docker via a DinD sidecar on tcp://localhost:2375.
-      # The sidecar races runner startup and docker/setup-qemu calls
-      # `docker version` immediately, so poll for the daemon first.
-      - name: Wait for DinD to be ready
-        run: |
-          for i in $(seq 1 60); do
-            docker version >/dev/null 2>&1 && echo "DinD ready after ${i}s" && exit 0
-            sleep 1
-          done
-          echo "DinD not ready after 60s" >&2
-          docker version || true
-          exit 1
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v4
         with:
-          # Mirrored: the shared runner IP hits Docker Hub's anonymous pull-rate limit.
+          # Mirrored to dodge Docker Hub's anonymous pull-rate limit.
           image: mirror.gcr.io/tonistiigi/binfmt:latest
 
       - name: Set up Docker Buildx
